@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to ISETA</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Welcome to ISETA - Connect with Skilled Professionals in Kigali!</h1>
+        <nav>
+            <a href="/register">Register</a>
+            <a href="/login_page">Login</a>
+            <a href="/services_page">Browse Services</a>
+        </nav>
+    </header>
+    <main>
+        <p>Your go-to platform to find and offer services in Kigali. Whether you need a plumber, an electrician, or a tutor, ISETA connects you with trusted professionals.</p>
+        <section class="features">
+            <h2>Why Choose ISETA?</h2>
+            <ul>
+                <li>Easy User Registration</li>
+                <li>Categorized Service Listings</li>
+                <li>Direct Communication</li>
+                <li>Transparent Rating System</li>
+            </ul>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2025 ISETA. All rights reserved.</p>
+    </footer>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

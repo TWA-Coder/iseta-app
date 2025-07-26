@@ -1,0 +1,420 @@
+body {
+    font-family: 'Inter', sans-serif; /* Using Inter font, fallback to generic sans-serif */
+    margin: 0;
+    padding: 0;
+    background-color: #F8F9FA; /* Very light grey, almost white, for a clean base */
+    color: #34495E; /* Neutral Dark: Deep charcoal for main text */
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Ensures footer stays at bottom */
+}
+
+/* Container for main content to center and limit width */
+main {
+    max-width: 1000px;
+    margin: 25px auto; /* Slightly more margin */
+    padding: 25px; /* Slightly more padding */
+    background-color: #FFFFFF;
+    border-radius: 12px; /* More rounded corners */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1); /* Stronger, softer shadow */
+    flex-grow: 1; /* Allows main content to expand */
+}
+
+/* Headings */
+h1, h2, h3 {
+    color: #34495E; /* Neutral Dark for headings */
+    margin-bottom: 18px; /* Slightly more space below headings */
+    font-weight: 600; /* Slightly bolder headings */
+}
+
+h1 {
+    text-align: center;
+    font-size: 2.8em; /* Larger main heading */
+    margin-top: 0;
+    padding-top: 25px;
+    color: #4A90E2; /* Primary Blue for main title */
+}
+
+h2 {
+    font-size: 2em; /* Larger subheading */
+    border-bottom: 2px solid #E0E6EB; /* Lighter border */
+    padding-bottom: 8px;
+    margin-top: 35px;
+}
+
+/* Header Styles */
+header {
+    background-color: #4A90E2; /* Primary Blue header */
+    color: white;
+    padding: 20px 25px;
+    text-align: center;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15); /* Enhanced shadow */
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+header h1 {
+    color: white; /* Ensure header h1 is white */
+    margin: 0;
+    padding: 0;
+    font-size: 2.2em;
+}
+
+header nav {
+    margin-top: 15px;
+}
+
+header nav a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 18px;
+    margin: 0 8px;
+    border-radius: 8px; /* More rounded nav links */
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-weight: 500;
+}
+
+header nav a:hover {
+    background-color: #357ABD; /* Slightly darker blue on hover */
+    transform: translateY(-2px); /* Subtle lift effect */
+}
+
+/* Footer Styles */
+footer {
+    background-color: #34495E; /* Neutral Dark footer */
+    color: white;
+    text-align: center;
+    padding: 20px 25px;
+    margin-top: 40px;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    font-size: 0.9em;
+}
+
+/* Form Styles */
+form {
+    background-color: #FDFDFD; /* Slightly off-white for forms */
+    padding: 30px; /* More padding */
+    border-radius: 12px; /* More rounded */
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08); /* Softer shadow */
+    margin-top: 25px;
+}
+
+form label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 600; /* Bolder labels */
+    color: #555;
+    font-size: 1.05em;
+}
+
+form input[type="text"],
+form input[type="email"],
+form input[type="password"],
+form input[type="number"],
+form select,
+form textarea {
+    width: calc(100% - 24px); /* Account for padding */
+    padding: 12px; /* More padding */
+    margin-bottom: 20px;
+    border: 1px solid #D1D8DD; /* Lighter border */
+    border-radius: 8px; /* More rounded inputs */
+    box-sizing: border-box;
+    font-size: 1.05em;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+form input[type="text"]:focus,
+form input[type="email"]:focus,
+form input[type="password"]:focus,
+form input[type="number"]:focus,
+form select:focus,
+form textarea:focus {
+    border-color: #4A90E2; /* Primary blue focus highlight */
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2); /* Soft blue glow */
+    outline: none;
+}
+
+form button[type="submit"] {
+    background-color: #50E3C2; /* Accent Green for submit buttons */
+    color: #34495E; /* Dark text on green button */
+    padding: 15px 25px; /* Larger padding */
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.2em; /* Larger font */
+    font-weight: 600;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 100%;
+    box-shadow: 0 4px 10px rgba(80, 227, 194, 0.3); /* Green shadow */
+}
+
+form button[type="submit"]:hover {
+    background-color: #3CC2A0; /* Darker green on hover */
+    transform: translateY(-2px); /* Subtle lift */
+}
+
+/* Utility for messages */
+#message, #messageStatus {
+    margin-top: 20px;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: bold;
+    text-align: center;
+    font-size: 1.1em;
+}
+
+/* Service Card Styles (for listings) */
+.service-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Slightly larger min-width */
+    gap: 25px; /* More gap */
+    margin-top: 25px;
+}
+
+.service-card {
+    background-color: #EAF7FD; /* Very light blue background */
+    border: 1px solid #B0D9F7; /* Lighter blue border */
+    border-radius: 12px; /* More rounded */
+    padding: 25px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.service-card:hover {
+    transform: translateY(-7px); /* More pronounced lift */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* Stronger shadow on hover */
+}
+
+.service-card h3 {
+    color: #4A90E2; /* Primary Blue for service titles */
+    margin-top: 0;
+    margin-bottom: 12px;
+    font-size: 1.5em;
+}
+
+.service-card p {
+    margin-bottom: 10px;
+    font-size: 1em;
+    color: #555;
+}
+
+.service-card button {
+    background-color: #4A90E2; /* Primary Blue for action buttons */
+    color: white;
+    padding: 12px 18px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1em;
+    margin-top: 15px;
+    width: 100%;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-weight: 500;
+}
+
+.service-card button:hover {
+    background-color: #357ABD; /* Darker blue on hover */
+    transform: translateY(-2px);
+}
+
+/* Profile Page Specific Styles */
+#providerDetails {
+    background-color: #E6F7F0; /* Very light green background */
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 35px;
+}
+
+#providerDetails h2 {
+    color: #50E3C2; /* Accent Green heading */
+    border-bottom-color: #A3EBD7; /* Lighter green border */
+}
+
+/* Review List Styles */
+.review-list {
+    margin-top: 25px;
+}
+
+.review-card {
+    background-color: #FFF8EB; /* Very light orange background */
+    border: 1px solid #FFDAB9; /* Lighter orange border */
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.review-card p {
+    margin: 8px 0;
+    font-size: 0.98em;
+}
+
+.review-card strong {
+    color: #FF9F43; /* Secondary Orange for ratings */
+    font-size: 1.1em;
+}
+
+/* Message Interface Styles */
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    height: 550px; /* Slightly taller chat window */
+    border: 1px solid #E0E6EB;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    background-color: #FDFDFD;
+}
+
+.messages-list {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 20px; /* More padding */
+    display: flex;
+    flex-direction: column;
+}
+
+.message-sent, .message-received {
+    max-width: 75%; /* Slightly wider messages */
+    padding: 12px 18px; /* More padding */
+    border-radius: 22px; /* More rounded bubbles */
+    margin-bottom: 12px; /* More space between messages */
+    word-wrap: break-word;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Subtle shadow for bubbles */
+}
+
+.message-sent {
+    align-self: flex-end;
+    background-color: #D7F5EC; /* Lighter, more vibrant green for sent messages */
+    color: #34495E;
+    border-bottom-right-radius: 8px; /* Sharpen one corner */
+}
+
+.message-received {
+    align-self: flex-start;
+    background-color: #E9EDF1; /* Slightly darker light grey for received messages */
+    color: #34495E;
+    border-bottom-left-radius: 8px; /* Sharpen one corner */
+}
+
+.message-sent span, .message-received span {
+    display: block;
+    font-size: 0.7em; /* Slightly smaller timestamp */
+    color: #777;
+    margin-top: 6px;
+    text-align: right;
+}
+
+.message-received span {
+    text-align: left;
+}
+
+.message-input-form {
+    display: flex;
+    padding: 18px; /* More padding */
+    border-top: 1px solid #E0E6EB;
+    background-color: #F0F4F7; /* Slightly darker input background */
+}
+
+.message-input-form input[type="text"] {
+    flex-grow: 1;
+    margin-right: 15px;
+    border-radius: 25px; /* More rounded input */
+    border: 1px solid #C5D0D9;
+    padding: 12px 20px;
+    font-size: 1em;
+}
+
+.message-input-form button {
+    background-color: #4A90E2; /* Primary Blue for send button */
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 25px; /* More rounded button */
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-weight: 500;
+}
+
+.message-input-form button:hover {
+    background-color: #357ABD;
+    transform: translateY(-2px);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    main {
+        margin: 15px;
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 2.2em;
+    }
+
+    h2 {
+        font-size: 1.7em;
+    }
+
+    header nav a {
+        padding: 8px 12px;
+        margin: 0 4px;
+        font-size: 0.85em;
+    }
+
+    form {
+        padding: 20px;
+    }
+
+    form input[type="text"],
+    form input[type="email"],
+    form input[type="password"],
+    form input[type="number"],
+    form select,
+    form textarea {
+        width: 100%; /* Full width on smaller screens */
+        padding: 10px;
+    }
+
+    form button[type="submit"] {
+        padding: 12px 15px;
+        font-size: 1em;
+    }
+
+    .service-grid {
+        grid-template-columns: 1fr; /* Stack cards on small screens */
+        gap: 15px;
+    }
+
+    .service-card {
+        padding: 20px;
+    }
+
+    .chat-container {
+        height: 450px; /* Adjust height for mobile */
+    }
+
+    .message-sent, .message-received {
+        max-width: 85%; /* Allow messages to take more width on small screens */
+        padding: 10px 15px;
+    }
+
+    .message-input-form {
+        padding: 12px;
+    }
+
+    .message-input-form input[type="text"] {
+        padding: 10px 15px;
+        margin-right: 10px;
+    }
+
+    .message-input-form button {
+        padding: 10px 15px;
+    }
+}

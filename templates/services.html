@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse Services - ISETA</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Browse Services</h1>
+        <nav>
+            <a href="/">Home</a> |
+            <a href="/login_page">Login</a> |
+            <span id="loggedInUser"></span>
+            <button id="logoutBtn" style="display:none;">Logout</button>
+        </nav>
+    </header>
+    <main>
+        <section class="filters">
+            <label for="categoryFilter">Filter by Category:</label>
+            <select id="categoryFilter">
+                <option value="">All Categories</option>
+                <!-- Categories will be loaded here by JS -->
+            </select>
+            <label for="searchQuery">Search:</label>
+            <input type="text" id="searchQuery" placeholder="e.g., plumber, electrician">
+            <button id="applyFilterBtn">Apply Filters</button>
+        </section>
+
+        <h2>Available Services</h2>
+        <div id="servicesList" class="service-grid">
+            <!-- Services will be loaded here by JS -->
+            <p id="noServicesMessage" style="display: none;">No services found matching your criteria.</p>
+        </div>
+    </main>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const categoryFilter = document.getElementById('categoryFilter');
+            const searchQuery = document.getElementById('searchQuery');
+            const applyFilterBtn = document.getElementById('applyFilterBtn');
+            const servicesList = document.getElementById('servicesList');
+            const noServicesMessage = document.getElementById('noServicesMessage');
+            const loggedInUserSpan = document.getElementById('loggedInUser');
+            const logoutBtn = document.getElementById('logoutBtn');
+
+            const currentUserId = localStorage.getItem('user_id');
+            const currentUsername = localStorage.getItem('username');
+
+            if (currentUserId && currentUsername) {
+                loggedInUserSpan.textContent = `Welcome, ${currentUsername}!`;
+                logoutBtn.style.display = 'inline';
+            }
+
+            logoutBtn.addEventListener('click', () => {
+                localStorage.clear(); // Clear all stored user info
+                window.location.href = '/login_page'; // Redirect to login
+            });
+
+            // Function to load categories
+            async function loadCategories() {
+                try {
+                    const categories = await fetchData('/categories');
+                    categories.forEach(cat => {
+                        const option = document.createElement('option');
+                        option.value = cat.id;
+                        option.textContent = cat.name;
+                        categoryFilter.appendChild(option);
+                    });
+                } catch (error) {
+                    console.error('Failed to load categories:', error);
+                    // Display error to user
+                }
+            }
+
+            // Function to load services
+            async function loadServices(categoryId = '', query = '') {
+                servicesList.innerHTML = ''; // Clear previous services
+                noServicesMessage.style.display = 'none'; // Hide no services message
+
+                let endpoint = '/services';
+                const params = new URLSearchParams();
+                if (categoryId) params.append('category_id', categoryId);
+                if (query) params.append('query', query); // You'll need to implement this filtering on backend
+
+                if (params.toString()) {
+                    endpoint += `?${params.toString()}`;
+                }
+
+                try {
+                    const services = await fetchData(endpoint);
+                    if (services.length === 0) {
+                        noServicesMessage.style.display = 'block';
+                    } else {
+                        services.forEach(service => {
+                            const serviceCard = document.createElement('div');
+                            serviceCard.className = 'service-card';
+                            serviceCard.innerHTML = `
+                                <h3>${service.name}</h3>
+                                <p><strong>Category:</strong> ${service.category_name}</p>
+                                <p><strong>Provider:</strong> <a href="/profile_page/${service.provider_id}">${service.provider_username}</a></p>
+                                <p>${service.description || 'No description provided.'}</p>
+                                <p>Price: ${service.price ? `$${service.price.toFixed(2)}` : 'N/A'}</p>
+                                <button onclick="window.location.href='/messages_page?receiver_id=${service.provider_id}'">Message Provider</button>
+                                <button onclick="window.location.href='/review_page/${service.provider_id}'">Leave Review</button>
+                            `;
+                            servicesList.appendChild(serviceCard);
+                        });
+                    }
+                } catch (error) {
+                    console.error('Failed to load services:', error);
+                    servicesList.innerHTML = '<p style="color:red;">Error loading services. Please try again.</p>';
+                }
+            }
+
+            // Initial load
+            await loadCategories();
+            await loadServices();
+
+            // Event listeners for filters
+            applyFilterBtn.addEventListener('click', () => {
+                const selectedCategory = categoryFilter.value;
+                const searchTxt = searchQuery.value.trim();
+                loadServices(selectedCategory, searchTxt);
+            });
+
+            // Optional: Live search as user types (more complex, for later)
+            // searchQuery.addEventListener('input', () => {
+            //     const selectedCategory = categoryFilter.value;
+            //     const searchTxt = searchQuery.value.trim();
+            //     loadServices(selectedCategory, searchTxt);
+            // });
+        });
+    </script>
+</body>
+</html>

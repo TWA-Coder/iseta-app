@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="profileTitle">Provider Profile - ISETA</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Service Provider Profile</h1>
+        <nav><a href="/">Home</a> | <a href="/services_page">Browse Services</a></nav>
+    </header>
+    <main>
+        <section id="providerDetails">
+            <h2>Loading Profile...</h2>
+            <p><strong>Username:</strong> <span id="profileUsername"></span></p>
+            <p><strong>Email:</strong> <span id="profileEmail"></span></p>
+            <p><strong>Location:</strong> <span id="profileLocation"></span></p>
+            <p><strong>Contact:</strong> <span id="profileContact"></span></p>
+            <p><strong>Bio:</strong> <span id="profileBio"></span></p>
+            <button id="messageProviderBtn" style="display:none;">Message This Provider</button>
+        </section>
+
+        <section>
+            <h2>Services Offered</h2>
+            <div id="providerServicesList" class="service-grid">
+                <p id="noProviderServices" style="display:none;">This provider has not listed any services yet.</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Reviews</h2>
+            <div id="providerReviewsList" class="review-list">
+                <p id="noReviews" style="display:none;">No reviews yet for this provider.</p>
+            </div>
+            <button id="leaveReviewBtn" style="display:none;">Leave a Review</button>
+        </section>
+    </main>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const providerId = {{ user_id }}; // Passed from Flask route
+            const profileTitle = document.getElementById('profileTitle');
+            const profileUsername = document.getElementById('profileUsername');
+            const profileEmail = document.getElementById('profileEmail');
+            const profileLocation = document.getElementById('profileLocation');
+            const profileContact = document.getElementById('profileContact');
+            const profileBio = document.getElementById('profileBio');
+            const messageProviderBtn = document.getElementById('messageProviderBtn');
+            const leaveReviewBtn = document.getElementById('leaveReviewBtn');
+
+            const providerServicesList = document.getElementById('providerServicesList');
+            const noProviderServices = document.getElementById('noProviderServices');
+            const providerReviewsList = document.getElementById('providerReviewsList');
+            const noReviews = document.getElementById('noReviews');
+
+            const currentLoggedInUserId = localStorage.getItem('user_id');
+            if (currentLoggedInUserId) {
+                messageProviderBtn.style.display = 'inline-block';
+                leaveReviewBtn.style.display = 'inline-block';
+                messageProviderBtn.onclick = () => window.location.href = `/messages_page?receiver_id=${providerId}`;
+                leaveReviewBtn.onclick = () => window.location.href = `/review_page/${providerId}`;
+            }
+
+
+            // Fetch Provider Details
+            try {
+                const provider = await fetchData(`/users/${providerId}`);
+                profileTitle.textContent = `${provider.username}'s Profile - ISETA`;
+                document.querySelector('h1').textContent = `${provider.username}'s Profile`;
+                profileUsername.textContent = provider.username;
+                profileEmail.textContent = provider.email;
+                profileLocation.textContent = provider.location || 'N/A';
+                profileContact.textContent = provider.contact_info || 'N/A';
+                profileBio.textContent = provider.bio || 'No bio provided.';
+            } catch (error) {
+                console.error('Failed to load provider details:', error);
+                document.getElementById('providerDetails').innerHTML = '<p style="color:red;">Error loading provider profile.</p>';
+            }
+
+            // Fetch Services Offered by this Provider
+            try {
+                // Note: Your backend /services GET endpoint needs to support filtering by provider_id
+                // For now, this assumes it returns all and you'd filter on frontend or modify backend.
+                // A better backend would be: /services?provider_id=<providerId>
+                const allServices = await fetchData('/services');
+                const providerServices = allServices.filter(s => s.provider_id === providerId);
+
+                if (providerServices.length === 0) {
+                    noProviderServices.style.display = 'block';
+                } else {
+                    providerServices.forEach(service => {
+                        const serviceCard = document.createElement('div');
+                        serviceCard.className = 'service-card';
+                        serviceCard.innerHTML = `
+                            <h3>${service.name}</h3>
+                            <p><strong>Category:</strong> ${service.category_name}</p>
+                            <p>${service.description || 'No description provided.'}</p>
+                            <p>Price: ${service.price ? `$${service.price.toFixed(2)}` : 'N/A'}</p>
+                        `;
+                        providerServicesList.appendChild(serviceCard);
+                    });
+                }
+            } catch (error) {
+                console.error('Failed to load provider services:', error);
+                providerServicesList.innerHTML = '<p style="color:red;">Error loading services.</p>';
+            }
+
+            // Fetch Reviews for this Provider
+            try {
+                // Note: Your backend /reviews GET endpoint needs to support filtering by provider_id
+                // A better backend would be: /reviews?provider_id=<providerId>
+                const allReviews = await fetchData('/reviews');
+                const providerReviews = allReviews.filter(r => r.provider_id === providerId);
+
+                if (providerReviews.length === 0) {
+                    noReviews.style.display = 'block';
+                } else {
+                    providerReviews.forEach(review => {
+                        const reviewCard = document.createElement('div');
+                        reviewCard.className = 'review-card';
+                        reviewCard.innerHTML = `
+                            <p><strong>Rating:</strong> ${'⭐'.repeat(review.rating)}</p>
+                            <p><strong>Comment:</strong> ${review.comment || 'No comment.'}</p>
+                            <p><em>By ${review.reviewer_username} on ${new Date(review.timestamp).toLocaleDateString()}</em></p>
+                        `;
+                        providerReviewsList.appendChild(reviewCard);
+                    });
+                }
+            } catch (error) {
+                console.error('Failed to load provider reviews:', error);
+                providerReviewsList.innerHTML = '<p style="color:red;">Error loading reviews.</p>';
+            }
+        });
+    </script>
+</body>
+</html>

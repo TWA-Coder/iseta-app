@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login to ISETA</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Login to ISETA</h1>
+        <nav><a href="/">Home</a> | <a href="/register">Register</a></nav>
+    </header>
+    <main>
+        <form id="loginForm">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+
+            <button type="submit">Login</button>
+            <p id="message" style="color: red;"></p>
+        </form>
+    </main>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginForm = document.getElementById('loginForm');
+            const messageDiv = document.getElementById('message');
+
+            loginForm.addEventListener('submit', async (event) => {
+                event.preventDefault();
+
+                const formData = new FormData(loginForm);
+                const userData = Object.fromEntries(formData.entries());
+
+                try {
+                    const response = await fetchData('/login', 'POST', userData);
+                    messageDiv.style.color = 'green';
+                    messageDiv.textContent = response.message;
+                    // In a real app, you'd store a token/session here
+                    localStorage.setItem('user_id', response.user_id);
+                    localStorage.setItem('user_type', response.user_type);
+                    localStorage.setItem('username', userData.username); // Store username for display
+
+                    // Redirect to a dashboard or services page
+                    setTimeout(() => {
+                        window.location.href = '/services_page';
+                    }, 1500);
+
+                } catch (error) {
+                    messageDiv.style.color = 'red';
+                    messageDiv.textContent = error.message || 'Login failed.';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

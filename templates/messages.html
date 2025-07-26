@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messages - ISETA</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Your Messages</h1>
+        <nav><a href="/">Home</a> | <a href="/services_page">Browse Services</a></nav>
+    </header>
+    <main>
+        <section class="chat-container">
+            <div id="messagesDisplay" class="messages-list">
+                <!-- Messages will be loaded here -->
+                <p id="noMessages" style="display:none;">No messages yet.</p>
+            </div>
+            <form id="messageForm" class="message-input-form">
+                <input type="text" id="messageContent" placeholder="Type your message..." required>
+                <button type="submit">Send</button>
+            </form>
+            <p id="messageStatus" style="color: red;"></p>
+        </section>
+    </main>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const messagesDisplay = document.getElementById('messagesDisplay');
+            const messageForm = document.getElementById('messageForm');
+            const messageContentInput = document.getElementById('messageContent');
+            const messageStatus = document.getElementById('messageStatus');
+            const noMessages = document.getElementById('noMessages');
+
+            const currentUserId = localStorage.getItem('user_id');
+            const currentUsername = localStorage.getItem('username');
+            const receiverIdFromUrl = new URLSearchParams(window.location.search).get('receiver_id');
+
+            if (!currentUserId) {
+                alert('You must be logged in to view messages.');
+                window.location.href = '/login_page';
+                return;
+            }
+
+            let conversationPartnerId = receiverIdFromUrl; // If coming from a profile page
+
+            // Function to load messages
+            async function loadMessages() {
+                messagesDisplay.innerHTML = '';
+                noMessages.style.display = 'none';
+                try {
+                    const allMessages = await fetchData('/messages');
+                    // Filter messages relevant to the current user
+                    let relevantMessages = allMessages.filter(msg =>
+                        (msg.sender_id == currentUserId && msg.receiver_id == conversationPartnerId) ||
+                        (msg.sender_id == conversationPartnerId && msg.receiver_id == currentUserId)
+                    );
+
+                    if (!conversationPartnerId && relevantMessages.length > 0) {
+                        // If no specific receiver_id, pick the first partner for display
+                        // This is a simplification; a real chat would list contacts
+                        conversationPartnerId = (relevantMessages[0].sender_id == currentUserId) ?
+                            relevantMessages[0].receiver_id : relevantMessages[0].sender_id;
+                    }
+
+                    if (relevantMessages.length === 0) {
+                        noMessages.style.display = 'block';
+                    } else {
+                        relevantMessages.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp)); // Sort by time
+                        relevantMessages.forEach(msg => {
+                            const msgDiv = document.createElement('div');
+                            msgDiv.className = (msg.sender_id == currentUserId) ? 'message-sent' : 'message-received';
+                            msgDiv.innerHTML = `
+                                <p>${msg.content}</p>
+                                <span>${msg.sender_username} - ${new Date(msg.timestamp).toLocaleTimeString()}</span>
+                            `;
+                            messagesDisplay.appendChild(msgDiv);
+                        });
+                        messagesDisplay.scrollTop = messagesDisplay.scrollHeight; // Scroll to bottom
+                    }
+                } catch (error) {
+                    console.error('Failed to load messages:', error);
+                    messagesDisplay.innerHTML = '<p style="color:red;">Error loading messages.</p>';
+                }
+            }
+
+            // Initial load
+            await loadMessages();
+
+            // Handle sending messages
+            messageForm.addEventListener('submit', async (event) => {
+                event.preventDefault();
+                const content = messageContentInput.value.trim();
+
+                if (!content || !conversationPartnerId) {
+                    messageStatus.textContent = 'Please type a message and select a recipient.';
+                    return;
+                }
+
+                const messageData = {
+                    sender_id: parseInt(currentUserId),
+                    receiver_id: parseInt(conversationPartnerId),
+                    content: content
+                };
+
+                try {
+                    const response = await fetchData('/messages', 'POST', messageData);
+                    messageStatus.style.color = 'green';
+                    messageStatus.textContent = response.message;
+                    messageContentInput.value = ''; // Clear input
+                    await loadMessages(); // Reload messages to show the new one
+                } catch (error) {
+                    messageStatus.style.color = 'red';
+                    messageStatus.textContent = error.message || 'Failed to send message.';
+                }
+            });
+
+            // Simplified: If you want to show messages with a specific partner,
+            // you'd need a way to select that partner from a list, or come from their profile.
+            // The `receiverIdFromUrl` handles coming from a profile.
+            // For a full chat, you'd add a contact list and switch conversations.
+        });
+    </script>
+</body>
+</html>

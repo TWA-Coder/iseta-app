@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leave a Review - ISETA</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Leave a Review</h1>
+        <nav><a href="/">Home</a> | <a href="/services_page">Browse Services</a></nav>
+    </header>
+    <main>
+        <form id="reviewForm">
+            <input type="hidden" id="providerId" value="{{ provider_id }}">
+            <input type="hidden" id="reviewerId"> <!-- Will be set by JS from localStorage -->
+
+            <label for="rating">Rating (1-5 Stars):</label>
+            <input type="number" id="rating" name="rating" min="1" max="5" required>
+
+            <label for="comment">Comment (Optional):</label>
+            <textarea id="comment" name="comment" rows="5"></textarea>
+
+            <button type="submit">Submit Review</button>
+            <p id="message" style="color: red;"></p>
+        </form>
+    </main>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const reviewForm = document.getElementById('reviewForm');
+            const providerIdInput = document.getElementById('providerId');
+            const reviewerIdInput = document.getElementById('reviewerId');
+            const ratingInput = document.getElementById('rating');
+            const commentInput = document.getElementById('comment');
+            const messageDiv = document.getElementById('message');
+
+            const currentUserId = localStorage.getItem('user_id');
+            if (!currentUserId) {
+                alert('You must be logged in to leave a review.');
+                window.location.href = '/login_page';
+                return;
+            }
+            reviewerIdInput.value = currentUserId; // Set the reviewer ID from localStorage
+
+            reviewForm.addEventListener('submit', async (event) => {
+                event.preventDefault();
+
+                const reviewData = {
+                    reviewer_id: parseInt(reviewerIdInput.value),
+                    provider_id: parseInt(providerIdInput.value),
+                    rating: parseInt(ratingInput.value),
+                    comment: commentInput.value.trim()
+                };
+
+                try {
+                    const response = await fetchData('/reviews', 'POST', reviewData);
+                    messageDiv.style.color = 'green';
+                    messageDiv.textContent = response.message;
+                    reviewForm.reset(); // Clear form on success
+                    // Optionally redirect back to provider profile or services page
+                    setTimeout(() => {
+                        window.location.href = `/profile_page/${providerIdInput.value}`;
+                    }, 2000);
+                } catch (error) {
+                    messageDiv.style.color = 'red';
+                    messageDiv.textContent = error.message || 'Failed to submit review.';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

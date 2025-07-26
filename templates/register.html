@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register for ISETA</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Register for ISETA</h1>
+        <nav><a href="/">Home</a> | <a href="/login_page">Login</a></nav>
+    </header>
+    <main>
+        <form id="registrationForm">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+
+            <label for="user_type">I am a:</label>
+            <select id="user_type" name="user_type" required>
+                <option value="">--Select--</option>
+                <option value="seeker">Service Seeker</option>
+                <option value="provider">Service Provider</option>
+            </select>
+
+            <div id="providerFields" style="display: none;">
+                <label for="location">Location (e.g., Kigali):</label>
+                <input type="text" id="location" name="location">
+
+                <label for="contact_info">Contact Info (e.g., Phone):</label>
+                <input type="text" id="contact_info" name="contact_info">
+
+                <label for="bio">Bio (for Providers):</label>
+                <textarea id="bio" name="bio" rows="4"></textarea>
+            </div>
+
+            <button type="submit">Register</button>
+            <p id="message" style="color: red;"></p>
+        </form>
+    </main>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const userTypeSelect = document.getElementById('user_type');
+            const providerFields = document.getElementById('providerFields');
+            const registrationForm = document.getElementById('registrationForm');
+            const messageDiv = document.getElementById('message');
+
+            userTypeSelect.addEventListener('change', () => {
+                if (userTypeSelect.value === 'provider') {
+                    providerFields.style.display = 'block';
+                    // Make provider-specific fields required for providers
+                    document.getElementById('location').setAttribute('required', 'required');
+                    document.getElementById('contact_info').setAttribute('required', 'required');
+                } else {
+                    providerFields.style.display = 'none';
+                    // Remove required attribute if not a provider
+                    document.getElementById('location').removeAttribute('required');
+                    document.getElementById('contact_info').removeAttribute('required');
+                }
+            });
+
+            registrationForm.addEventListener('submit', async (event) => {
+                event.preventDefault(); // Prevent default form submission
+
+                const formData = new FormData(registrationForm);
+                const userData = Object.fromEntries(formData.entries());
+
+                // Clean up empty bio if not a provider
+                if (userData.user_type !== 'provider') {
+                    delete userData.bio;
+                    delete userData.location;
+                    delete userData.contact_info;
+                }
+
+                try {
+                    const response = await fetchData('/users', 'POST', userData);
+                    messageDiv.style.color = 'green';
+                    messageDiv.textContent = response.message;
+                    registrationForm.reset(); // Clear form on success
+                    userTypeSelect.value = ''; // Reset select
+                    providerFields.style.display = 'none'; // Hide provider fields
+                    // Optionally redirect to login page
+                    setTimeout(() => {
+                        window.location.href = '/login_page';
+                    }, 2000);
+                } catch (error) {
+                    messageDiv.style.color = 'red';
+                    messageDiv.textContent = error.message || 'Registration failed.';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
