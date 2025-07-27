@@ -1,6 +1,6 @@
 # ISETA: Connecting Kigali with Skilled Professionals
 
-## ISETA (meaning "a market place where we find skilled people for hire" in Kinyarwanda) is a web-based platform designed to revolutionize how urban residents in Kigali connect with trustworthy local skilled professionals. It aims to create a transparent and efficient marketplace for various services, like  plumbing and electrical etc.
+#### ISETA (meaning "a market place where we find skilled people for hire" in Kinyarwanda) is a web-based platform designed to revolutionize how urban residents in Kigali connect with trustworthy local skilled professionals. It aims to create a transparent and efficient marketplace for various services, like  plumbing and electrical etc.
 
 The Problem ISETA Solves
 * Lack of Trust and Transparency
@@ -26,7 +26,9 @@ The Problem ISETA Solves
 
 ###  Accessing the Live Deployment (Render)
 1. Open your web browser
-2. Navigate to the following URL: <a href="https://iseta-app.onrender.com.">
+2. Navigate to the following URL: https://iseta-app.onrender.com
+
+    * NB: If using this link you face any issue Kindly follow the steps below as they are issues with deployment that i am still trouble shooting
 
 
 
