@@ -19,13 +19,69 @@
         <p>Your go-to platform to find and offer services in Kigali. Whether you need a plumber, an electrician, or a tutor, ISETA connects you with trusted professionals.</p>
         <section class="features">
             <h2>Why Choose ISETA?</h2>
-            <ul>
+            <ul class="features-list">
                 <li>Easy User Registration</li>
                 <li>Categorized Service Listings</li>
                 <li>Direct Communication</li>
                 <li>Transparent Rating System</li>
             </ul>
         </section>
+        <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const featuresList = document.querySelector('.features-list');
+            const listItems = featuresList.querySelectorAll('li');
+
+            // Define a palette of colors for the bullets and backgrounds
+            const bulletColors = ['#FF9F43', '#50E3C2', '#4A90E2', '#FF6B6B']; // Orange, Green, Blue, Red
+            const bgColors = ['#FFF8EB', '#E6F7F0', '#EAF7FD', '#FDEAEA']; // Light versions of the above
+            const textColors = ['#34495E', '#34495E', '#34495E', '#34495E']; // Consistent dark text
+
+            listItems.forEach((item, index) => {
+                // 1. Create and append the custom bullet span
+                const bulletSpan = document.createElement('span');
+                bulletSpan.classList.add('bullet');
+                bulletSpan.textContent = '★'; // Star character
+                item.prepend(bulletSpan); // Add the star before the text content
+
+                // 2. Apply initial dynamic colors
+                const colorIndex = index % bulletColors.length; // Cycle through colors
+                const initialBulletColor = bulletColors[colorIndex];
+                const initialBgColor = bgColors[colorIndex];
+                const initialTextColor = textColors[colorIndex];
+
+                bulletSpan.style.color = initialBulletColor;
+                bulletSpan.style.textShadow = '1px 1px 2px rgba(0, 0, 0, 0.2)'; // Initial shadow for bullet
+                item.style.backgroundColor = initialBgColor;
+                item.style.color = initialTextColor;
+
+                // 3. Add hover effects using JavaScript
+                item.addEventListener('mouseover', () => {
+                    // Change bullet color and apply stronger shadow/transform on hover
+                    bulletSpan.style.color = '#357ABD'; // Darker blue on hover for all bullets
+                    bulletSpan.style.transform = 'translateY(-50%) rotate(30deg) scale(1.3)';
+                    bulletSpan.style.textShadow = '2px 2px 4px rgba(0, 0, 0, 0.3)';
+
+                    // Change list item background and text color on hover
+                    item.style.backgroundColor = '#E0E6EB'; // A neutral light grey for hover background
+                    item.style.color = '#2C3E50'; // Darker text on hover
+                    item.style.boxShadow = '0 6px 15px rgba(0, 0, 0, 0.15)'; // More pronounced shadow on hover
+                    item.style.transform = 'translateX(10px) scale(1.02)'; // Slide and slightly enlarge
+                });
+
+                item.addEventListener('mouseout', () => {
+                    // Revert to initial styles on mouse out
+                    bulletSpan.style.color = initialBulletColor;
+                    bulletSpan.style.transform = 'translateY(-50%) rotate(0deg) scale(1)';
+                    bulletSpan.style.textShadow = '1px 1px 2px rgba(0, 0, 0, 0.2)';
+
+                    item.style.backgroundColor = initialBgColor;
+                    item.style.color = initialTextColor;
+                    item.style.boxShadow = '0 2px 5px rgba(0, 0, 0, 0.05)';
+                    item.style.transform = 'translateX(0) scale(1)';
+                });
+            });
+        });
+    </script>
     </main>
     <footer>
         <p>&copy; 2025 ISETA. All rights reserved.</p>
