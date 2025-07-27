@@ -1,6 +1,6 @@
 // main.js (or specific script for a page)
 
-const API_BASE_URL = 'https://iseta-app.onrender.com;' // Your Flask backend URL
+const API_BASE_URL = 'http://127.0.0.1:5000' // Your Flask backend URL
 
 async function fetchData(endpoint, method = 'GET', data = null) {
     const options = {
